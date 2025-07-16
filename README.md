@@ -1,7 +1,7 @@
 
 # ⚽ Ascenso Albacete 2026 · Análisis Predictivo con Python 🧠📊
 
-Este repositorio contiene el análisis estadístico completo del rendimiento del ⚽🏟 **Albacete Balompié** 🦇🏆 en Segunda División (LaLiga Hypermotion) durante las últimas temporadas, con el objetivo de evaluar sus opciones reales de ascenso a Primera División en la temporada 2025–26.
+Este repositorio contiene el análisis estadístico completo del rendimiento del **Albacete Balompié** 🦇 en Segunda División (LaLiga Hypermotion) durante las últimas temporadas, con el objetivo de evaluar sus opciones reales de ascenso a Primera División en la temporada 2025–26.
 
 Incluye:
 - 📈 Cálculos estadísticos detallados (media, desviación típica, z-scores, percentiles).
@@ -70,4 +70,4 @@ El proyecto ha sido desarrollado como parte de una iniciativa de análisis avanz
 
 ---
 
-¡Vamos Alba! 🏁🔴⚪
+¡Aúpa Alba! 🏁🔴⚪
