@@ -1,0 +1,70 @@
+# -*- coding: utf-8 -*-
+import pandas as pd
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. Cargar el dataset
+df = pd.read_csv("ascenso_albacete_2015_2025_v2.csv")
+
+# 2. Añadir KPIs calculados
+df["PPG"] = df["Pts"] / 42
+df["GF/PG"] = df["GF"] / 42
+df["GA/PG"] = df["GA"] / 42
+df["DG"] = df["GF"] - df["GA"]
+
+# 3. Separar ascendidos (label == 'Ascendido') y temporadas del Albacete (label == 'Albacete')
+ascendidos = df[df["Label"] == "Ascendido"]
+albacete = df[df["Label"] == "Albacete"]
+
+# 4. Estadísticos descriptivos (para ascendidos)
+stats_asc = ascendidos[["Pts", "GF", "GA", "DG", "PPG", "GF/PG", "GA/PG"]].describe().round(2)
+print("📊 Estadísticos de los equipos ascendidos:")
+print(stats_asc)
+
+# 5. Calcular la brecha 2024-25 vs media de ascendidos
+media_asc = ascendidos.mean(numeric_only=True)
+temporada_24_25 = albacete[albacete["Temporada"] == "2024-25"].iloc[0]
+brechas = {
+    "Pts": media_asc["Pts"] - temporada_24_25["Pts"],
+    "GF": media_asc["GF"] - temporada_24_25["GF"],
+    "GA": temporada_24_25["GA"] - media_asc["GA"],
+    "DG": (temporada_24_25["GF"] - temporada_24_25["GA"]) - media_asc["DG"]
+}
+print("\n📉 Brecha entre Alba 24-25 y media de ascendidos:")
+print(brechas)
+
+# 6. Simulación de escenario óptimo
+escenario = {
+    "Pts": temporada_24_25["Pts"] + 20,
+    "GF": temporada_24_25["GF"] + 15,
+    "GA": temporada_24_25["GA"] - 15
+}
+escenario["DG"] = escenario["GF"] - escenario["GA"]
+escenario["PPG"] = escenario["Pts"] / 42
+print("\n🔮 Escenario óptimo 2025-26:")
+print(escenario)
+
+# 7. Z-Score del PPG del escenario
+mu_ppg = media_asc["PPG"]
+sigma_ppg = ascendidos["PPG"].std()
+z_score = (escenario["PPG"] - mu_ppg) / sigma_ppg
+percentil = stats.norm.cdf(z_score) * 100
+print(f"\n📈 Z-Score del escenario (PPG): {z_score:.2f} → Percentil: {percentil:.1f}%")
+
+# 8. Gráfico: evolución de puntos del Albacete vs media de ascenso
+plt.figure(figsize=(10,6))
+sns.lineplot(data=albacete, x="Temporada", y="Pts", label="⚽ Albacete Balompié", marker="o")
+plt.axhline(y=media_asc["Pts"], color="red", linestyle="--", label="Media Ascenso")
+plt.title("Evolución de Puntos del Albacete vs Media de Ascenso")
+plt.ylabel("Puntos")
+plt.xlabel("Temporada")
+plt.legend()
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# 9. Guardar outputs si quieres exportarlos
+# stats_asc.to_csv("estadisticos_ascendidos.csv")
+# pd.DataFrame([escenario]).to_csv("escenario_optimo.csv")
